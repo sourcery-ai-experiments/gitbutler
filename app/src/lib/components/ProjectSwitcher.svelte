@@ -1,13 +1,14 @@
 <script lang="ts">
 	import Select from '../shared/Select.svelte';
 	import SelectItem from '../shared/SelectItem.svelte';
-	import { ProjectService, Project } from '$lib/backend/projects';
+	import { ProjectListingService } from '$lib/projects/projectListingService';
+	import { Project } from '$lib/projects/types';
 	import Button from '$lib/shared/Button.svelte';
 	import { getContext, maybeGetContext } from '$lib/utils/context';
 	import { derived } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
-	const projectService = getContext(ProjectService);
+	const projectListingService = getContext(ProjectListingService);
 	const project = maybeGetContext(Project);
 
 	type ProjectRecord = {
@@ -15,7 +16,7 @@
 		title: string;
 	};
 
-	const mappedProjects = derived(projectService.projects, (projects) =>
+	const mappedProjects = derived(projectListingService.projects, (projects) =>
 		projects.map((project) => ({
 			id: project.id,
 			title: project.title
@@ -49,7 +50,7 @@
 			on:click={async () => {
 				loading = true;
 				try {
-					await projectService.addProject();
+					await projectListingService.addProject();
 				} finally {
 					loading = false;
 				}

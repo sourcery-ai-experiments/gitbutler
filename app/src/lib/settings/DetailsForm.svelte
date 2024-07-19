@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { Project, ProjectService } from '$lib/backend/projects';
 	import SectionCard from '$lib/components/SectionCard.svelte';
+	import { ProjectListingService } from '$lib/projects/projectListingService';
+	import { Project } from '$lib/projects/types';
 	import Spacer from '$lib/shared/Spacer.svelte';
 	import TextArea from '$lib/shared/TextArea.svelte';
 	import TextBox from '$lib/shared/TextBox.svelte';
@@ -9,7 +10,7 @@
 
 	const project = getContext(Project);
 	const user = getContextStore(User);
-	const projectService = getContext(ProjectService);
+	const projectListingService = getContext(ProjectListingService);
 
 	let title = project?.title;
 	let description = project?.description;
@@ -17,13 +18,17 @@
 	async function saveProject() {
 		const api =
 			$user && project.api
-				? await projectService.updateCloudProject($user?.access_token, project.api.repository_id, {
-						name: project.title,
-						description: project.description
-					})
+				? await projectListingService.updateCloudProject(
+						$user?.access_token,
+						project.api.repository_id,
+						{
+							name: project.title,
+							description: project.description
+						}
+					)
 				: undefined;
 		project.api = api ? { ...api, sync: true } : undefined;
-		projectService.updateProject(project);
+		projectListingService.updateProject(project);
 	}
 </script>
 

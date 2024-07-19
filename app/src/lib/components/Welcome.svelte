@@ -2,18 +2,18 @@
 	import WelcomeAction from './WelcomeAction.svelte';
 	import WelcomeSigninAction from './WelcomeSigninAction.svelte';
 	import newProjectSvg from '$lib/assets/no-projects/new-project.svg?raw';
-	import { ProjectService } from '$lib/backend/projects';
+	import { ProjectListingService } from '$lib/projects/projectListingService';
 	import IconLink from '$lib/shared/IconLink.svelte';
 	import { getContext } from '$lib/utils/context';
 
-	const projectService = getContext(ProjectService);
+	const projectListingService = getContext(ProjectListingService);
 
 	let newProjectLoading = false;
 
 	async function onNewProject() {
 		newProjectLoading = true;
 		try {
-			await projectService.addProject();
+			await projectListingService.addProject();
 		} finally {
 			newProjectLoading = false;
 		}
