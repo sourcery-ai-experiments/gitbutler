@@ -12,7 +12,7 @@ import { BranchController } from '$lib/vbranches/branchController';
 import { VirtualBranchService } from '$lib/vbranches/virtualBranch';
 import { error } from '@sveltejs/kit';
 import { map } from 'rxjs';
-import type { Project } from '$lib/backend/projects';
+import type { Project } from '$lib/projects/types';
 
 export const prerender = false;
 
@@ -21,7 +21,7 @@ export async function load({ params, parent }) {
 	const {
         authService,
         githubService,
-        projectService,
+        projectListingService,
         remoteUrl$,
     } = await parent();
 
@@ -31,7 +31,7 @@ export async function load({ params, parent }) {
 	// synchronously available are much greater than the cost.
 	let project: Project | undefined = undefined;
 	try {
-		project = await projectService.getProject(projectId);
+		project = await projectListingService.getProject(projectId);
 		invoke('set_project_active', { id: projectId }).then((_r) => {});
 	} catch (err: any) {
 		throw error(400, {

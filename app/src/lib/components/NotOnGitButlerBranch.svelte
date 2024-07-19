@@ -5,8 +5,9 @@
 	import Link from '../shared/Link.svelte';
 	import ProjectNameLabel from '../shared/ProjectNameLabel.svelte';
 	import derectionDoubtSvg from '$lib/assets/illustrations/direction-doubt.svg?raw';
-	import { ProjectService, Project } from '$lib/backend/projects';
 	import { showError } from '$lib/notifications/toasts';
+	import { ProjectListingService } from '$lib/projects/projectListingService';
+	import { Project } from '$lib/projects/types';
 	import Button from '$lib/shared/Button.svelte';
 	import { getContext } from '$lib/utils/context';
 	import * as toasts from '$lib/utils/toasts';
@@ -17,7 +18,7 @@
 	export let baseBranch: BaseBranch;
 
 	const branchController = getContext(BranchController);
-	const projectService = getContext(ProjectService);
+	const projectListingService = getContext(ProjectListingService);
 	const project = getContext(Project);
 
 	let isDeleting = false;
@@ -28,7 +29,7 @@
 			isDeleting = true;
 			try {
 				deleteConfirmationModal.close();
-				await projectService.deleteProject(project.id);
+				await projectListingService.deleteProject(project.id);
 				toasts.success('Project deleted');
 				goto('/', { invalidateAll: true });
 			} catch (err: any) {
@@ -36,7 +37,7 @@
 				showError('Failed to delete project', err);
 			} finally {
 				isDeleting = false;
-				projectService.reload();
+				projectListingService.reloadAll();
 			}
 		}
 	}

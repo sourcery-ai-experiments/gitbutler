@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ProjectService } from '$lib/backend/projects';
+	import { ProjectListingService } from '$lib/projects/projectListingService';
 	import ListItem from '$lib/shared/ListItem.svelte';
 	import ScrollableContainer from '$lib/shared/ScrollableContainer.svelte';
 	import { getContext } from '$lib/utils/context';
@@ -8,8 +8,8 @@
 
 	export let isNavCollapsed: boolean;
 
-	const projectService = getContext(ProjectService);
-	const projects = projectService.projects;
+	const projectListingService = getContext(ProjectListingService);
+	const projects = projectListingService.projects;
 
 	let hidden = true;
 	let loading = false;
@@ -37,7 +37,7 @@
 							icon={selected ? 'tick' : undefined}
 							on:click={() => {
 								hide();
-								projectService.setLastOpenedProject(project.id);
+								projectListingService.setLastOpenedProject(project.id);
 								goto(`/${project.id}/board`);
 							}}
 						>
@@ -54,7 +54,7 @@
 				on:click={async () => {
 					loading = true;
 					try {
-						await projectService.addProject();
+						await projectListingService.addProject();
 					} finally {
 						loading = false;
 					}

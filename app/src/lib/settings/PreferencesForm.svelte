@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { GitConfigService } from '$lib/backend/gitConfigService';
-	import { Project, ProjectService } from '$lib/backend/projects';
 	import SectionCard from '$lib/components/SectionCard.svelte';
 	import SectionCardDisclaimer from '$lib/components/SectionCardDisclaimer.svelte';
 	import { projectRunCommitHooks } from '$lib/config/config';
+	import { ProjectListingService } from '$lib/projects/projectListingService';
+	import { Project } from '$lib/projects/types';
 	import Section from '$lib/settings/Section.svelte';
 	import Button from '$lib/shared/Button.svelte';
 	import InfoMessage from '$lib/shared/InfoMessage.svelte';
@@ -16,7 +17,7 @@
 	import { invoke } from '@tauri-apps/api/tauri';
 	import { onMount } from 'svelte';
 
-	const projectService = getContext(ProjectService);
+	const projectListingService = getContext(ProjectListingService);
 	const project = getContext(Project);
 
 	let snaphotLinesThreshold = project?.snapshot_lines_threshold || 20; // when undefined, the default is 20
@@ -30,17 +31,17 @@
 
 	async function setWithForcePush(value: boolean) {
 		project.ok_with_force_push = value;
-		await projectService.updateProject(project);
+		await projectListingService.updateProject(project);
 	}
 
 	async function setOmitCertificateCheck(value: boolean | undefined) {
 		project.omit_certificate_check = !!value;
-		await projectService.updateProject(project);
+		await projectListingService.updateProject(project);
 	}
 
 	async function setSnapshotLinesThreshold(value: number) {
 		project.snapshot_lines_threshold = value;
-		await projectService.updateProject(project);
+		await projectListingService.updateProject(project);
 	}
 
 	async function setSignCommits(targetState: boolean) {
@@ -99,7 +100,7 @@
 
 	async function setUseNewLocking(value: boolean) {
 		project.use_new_locking = value;
-		await projectService.updateProject(project);
+		await projectListingService.updateProject(project);
 	}
 
 	$: setUseNewLocking(useNewLocking);
